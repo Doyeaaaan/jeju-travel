@@ -1,0 +1,150 @@
+export const friends = [
+  {
+    id: 1,
+    name: "김민지",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 서귀포시 여행 중",
+    lastActive: "방금 전",
+  },
+  {
+    id: 2,
+    name: "이준호",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "3시간 전 접속",
+    lastActive: "3시간 전",
+  },
+  {
+    id: 3,
+    name: "박서연",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 여행 계획 중",
+    lastActive: "오늘",
+  },
+  {
+    id: 4,
+    name: "최현우",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "어제 접속",
+    lastActive: "어제",
+  },
+  {
+    id: 5,
+    name: "정다은",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "한라산 등반 중",
+    lastActive: "2일 전",
+  },
+  {
+    id: 6,
+    name: "강지훈",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "2일 전 접속",
+    lastActive: "2일 전",
+  },
+  {
+    id: 7,
+    name: "한소희",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "김민지님의 친구",
+    lastActive: "온라인",
+  },
+  {
+    id: 8,
+    name: "임재현",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "박서연님의 친구",
+    lastActive: "오늘",
+  },
+  {
+    id: 9,
+    name: "서지민",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 맛집 탐방 중",
+    lastActive: "온라인",
+  },
+  {
+    id: 10,
+    name: "윤태호",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "우도 여행 중",
+    lastActive: "방금 전",
+  },
+  {
+    id: 11,
+    name: "조은서",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "성산일출봉 방문 예정",
+    lastActive: "1시간 전",
+  },
+  {
+    id: 12,
+    name: "권민석",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 여행 후기 작성 중",
+    lastActive: "어제",
+  },
+  {
+    id: 13,
+    name: "신예진",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 카페 투어 중",
+    lastActive: "온라인",
+  },
+  {
+    id: 14,
+    name: "황준영",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 렌트카 여행 중",
+    lastActive: "방금 전",
+  },
+  {
+    id: 15,
+    name: "송하은",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 숙소 검색 중",
+    lastActive: "3시간 전",
+  },
+  {
+    id: 16,
+    name: "류지원",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "제주 올레길 걷는 중",
+    lastActive: "어제",
+  },
+]
+
+export const friendRequests = [
+  {
+    id: 101,
+    name: "송지원",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "2일 전 요청",
+  },
+  {
+    id: 102,
+    name: "윤태호",
+    image: "/placeholder.svg?height=48&width=48",
+    status: "오늘 요청",
+  },
+]
+
+export const recommendedFriends = [
+  {
+    id: 201,
+    name: "한소희",
+    image: "/placeholder.svg?height=48&width=48",
+    connection: "김민지님의 친구",
+  },
+  {
+    id: 202,
+    name: "임재현",
+    image: "/placeholder.svg?height=48&width=48",
+    connection: "박서연님의 친구",
+  },
+  {
+    id: 203,
+    name: "오민석",
+    image: "/placeholder.svg?height=48&width=48",
+    connection: "이준호님의 친구",
+  },
+]
