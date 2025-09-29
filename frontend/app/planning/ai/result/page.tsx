@@ -193,7 +193,7 @@ export default function AIResultPage() {
     // 첫 번째 일정을 즉시 선택
     if (mockItineraries.length > 0) {
       setSelectedItinerary(mockItineraries[0])
-    }
+      setActiveDayA(1) // 명시적으로 1일차 설정    }
 
     // API에서 받은 추천 데이터가 있으면 나중에 업데이트
     if (data.recommendations && data.recommendations.options) {
@@ -201,7 +201,7 @@ export default function AIResultPage() {
         setItineraries(data.recommendations.options)
         if (data.recommendations.options.length > 0) {
           setSelectedItinerary(data.recommendations.options[0])
-        }
+          setActiveDayA(1) // 명시적으로 1일차 설정        }
       }, 100) // 100ms 후에 API 데이터로 업데이트
     }
   }, [router])
