@@ -29,7 +29,6 @@ type CategoryType = "자연" | "문화" | "체험" | "음식"
 
 export const attractionService = {
   async getAttractions(page = 3, size = 30) {
-    log("🎯 AttractionService.getAttractions 호출됨:", { page, size })
 
     try {
       // 2초 대기 (Rate Limiting 방지)
@@ -41,7 +40,6 @@ export const attractionService = {
         apiClient.get(`/visitjeju/restaurants?offset=${(page - 1) * size}&limit=${size}`)
       ])
 
-      log("✅ 데이터 가져오기 성공:", 
         "관광지:", Array.isArray(attractionsResponse) ? attractionsResponse.length : "Not an array",
         "맛집:", Array.isArray(restaurantsResponse) ? restaurantsResponse.length : "Not an array")
 
@@ -55,7 +53,6 @@ export const attractionService = {
 
       // 카테고리 분포 확인
       const categories = new Set(allPlaces.map(item => item.category).filter(Boolean))
-      log("📊 카테고리 종류:", Array.from(categories))
 
       // 필터링 조건 완화 - 기본적인 필수 필드만 확인
       const filteredPlaces = allPlaces.filter((item: any): item is Place => {
@@ -71,19 +68,14 @@ export const attractionService = {
         )
 
         if (!isValid) {
-          log("⚠️ 유효하지 않은 장소 데이터:", item)
         }
 
         return isValid
       })
 
-      log("📋 필터링 전 장소:", allPlaces.length, "개")
-      log("📋 필터링 후 장소:", filteredPlaces.length, "개")
 
       // 첫 5개 항목의 상세 정보 로그
-      log("🔍 첫 5개 장소 상세 정보:")
       filteredPlaces.slice(0, 5).forEach((place, index) => {
-        log(`${index + 1}. ${place.name}:`, {
           category: place.category,
           region: place.region,
           address: place.address,
@@ -95,7 +87,6 @@ export const attractionService = {
     } catch (error: unknown) {
 
       if (error instanceof Error && error.message.includes("API 접근이 제한")) {
-        log("⚠️ API 접근 제한으로 인해 빈 데이터 반환")
         return []
       }
 
@@ -104,20 +95,17 @@ export const attractionService = {
   },
 
   async getAllAttractions() {
-    log("🌟 전체 관광지 데이터 수집 시작...")
 
     try {
       const allAttractions: Place[] = []
 
       // 3페이지만 요청 (총 90개 정도)
       for (let page = 1; page <= 3; page++) {
-        log(`📄 페이지 ${page} 요청 중...`)
 
         try {
           const pageAttractions = await this.getAttractions(page, 30)
           allAttractions.push(...pageAttractions)
 
-          log(`✅ 페이지 ${page} 완료: ${pageAttractions.length}개 추가`)
 
           // 페이지 간 대기 시간 (Rate Limiting 방지)
           if (page < 3) {
@@ -129,7 +117,6 @@ export const attractionService = {
         }
       }
 
-      log("🎉 전체 관광지 수집 완료:", allAttractions.length, "개")
       return allAttractions
     } catch (error: unknown) {
       return []
@@ -137,7 +124,6 @@ export const attractionService = {
   },
 
   async searchAttractionsByCategory(category: CategoryType) {
-    log("🔍 카테고리별 관광지 검색:", category)
 
     try {
       const allAttractions = await this.getAllAttractions()
@@ -163,7 +149,6 @@ export const attractionService = {
         return keywords.some((keyword: string) => searchText.includes(keyword))
       })
 
-      log(`📋 ${category} 카테고리 관광지:`, filtered.length, "개")
       return filtered
     } catch (error: unknown) {
       return []
@@ -207,7 +192,6 @@ export const attractionService = {
         isSubcategoryMatch = true
       }
 
-      log(`🔍 카테고리 필터링 - ${attraction.name}:`, {
         category: attraction.category,
         tags: tags,
         searchText: searchText.slice(0, 50) + "...",
@@ -253,9 +237,7 @@ export const attractionService = {
   // 관광지 상세 정보 가져오기
   async getAttractionDetail(contentsId: string): Promise<Place | null> {
     try {
-      log("🎯 관광지 상세 정보 요청:", contentsId)
       const response = await apiClient.get<Place>(`/visitjeju/attractions/${contentsId}`)
-      log("✅ 관광지 상세 정보 응답:", response)
       return response
     } catch (error) {
       return null

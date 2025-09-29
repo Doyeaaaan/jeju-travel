@@ -187,19 +187,16 @@ export default function AIResultPage() {
     setTripData(data)
 
     // 즉시 더미 데이터를 생성하여 빠른 표시
-    log("🚀 빠른 로딩을 위해 즉시 더미 데이터 생성")
     const mockItineraries = generateMockItineraries(data)
     setItineraries(mockItineraries)
     
     // 첫 번째 일정을 즉시 선택
     if (mockItineraries.length > 0) {
       setSelectedItinerary(mockItineraries[0])
-      log("✅ 첫 번째 일정 즉시 선택 완료:", mockItineraries[0].title)
     }
 
     // API에서 받은 추천 데이터가 있으면 나중에 업데이트
     if (data.recommendations && data.recommendations.options) {
-      log("📦 API 추천 데이터로 업데이트:", data.recommendations.options)
       setTimeout(() => {
         setItineraries(data.recommendations.options)
         if (data.recommendations.options.length > 0) {
@@ -215,11 +212,9 @@ export default function AIResultPage() {
       // 첫 번째 일정인 경우 activeDayA를 1로 설정
       if (selectedItinerary === itineraries[0]) {
         setActiveDayA(1)
-        log("✅ 코스 A 선택됨, activeDayA를 1로 설정")
       } else if (selectedItinerary === itineraries[1]) {
         // 두 번째 일정인 경우 activeDayB를 1로 설정
         setActiveDayB(1)
-        log("✅ 코스 B 선택됨, activeDayB를 1로 설정")
       }
     }
   }, [selectedItinerary, itineraries])
@@ -228,14 +223,12 @@ export default function AIResultPage() {
   useEffect(() => {
     if (selectedItinerary && selectedItinerary === itineraries[0]) {
       setActiveDayA(1)
-      log("🔄 페이지 로딩 시 activeDayA 강제 설정")
     }
   }, [selectedItinerary, itineraries])
 
   // 페이지 최초 로딩 시 activeDay 강제 설정 (더 강력한 초기화)
   useEffect(() => {
     if (itineraries.length > 0 && selectedItinerary && !activeDayA && !activeDayB) {
-      log("🚀 페이지 최초 로딩 - activeDay 강제 초기화")
       setActiveDayA(1)
       setActiveDayB(1)
     }
@@ -259,14 +252,12 @@ export default function AIResultPage() {
         numOptions: 2
       }
 
-      log("🔄 새로운 추천 요청:", request)
 
       // API 호출
       const response = await recommendationService.getKeywordRecommendations(request)
       
       // API 응답이 성공인지 확인
       if (response && response.success === true && response.data) {
-        log("📦 새로운 추천 응답:", response.data.options)
         setItineraries(response.data.options)
         
         // 새로운 일정 중 첫 번째를 자동으로 선택
@@ -275,7 +266,6 @@ export default function AIResultPage() {
           // 일차 선택 상태 초기화
           setActiveDayA(1)
           setActiveDayB(1)
-          log("✅ 새로운 일정 선택됨:", response.data.options[0].title)
         }
         
         // 새로운 추천 데이터 저장
@@ -290,7 +280,6 @@ export default function AIResultPage() {
     } catch (error: any) {
       
       // API 실패 시 더미 데이터로 폴백
-      log("🔄 더미 데이터로 폴백")
       const mockResponse = recommendationService.generateMockRecommendations({
         startDate: tripData.startDate,
         endDate: tripData.endDate,
@@ -312,7 +301,6 @@ export default function AIResultPage() {
         // 일차 선택 상태 초기화
         setActiveDayA(1)
         setActiveDayB(1)
-        log("✅ 더미 데이터 일정 선택됨:", mockResponse.data.options[0].title)
       }
     } finally {
       setIsRegenerating(false)
@@ -548,7 +536,6 @@ export default function AIResultPage() {
                               
                               // 탭 전환 후 강제 resize/relayout + center 재설정
                               setTimeout(() => {
-                                log('🔄 탭 전환 후 지도 업데이트:', day.day)
                                 // 브라우저에게 resize 알림
                                 window.dispatchEvent(new Event('resize'))
                                 
@@ -559,7 +546,6 @@ export default function AIResultPage() {
                                     (window as any).kakaoMapInstance.relayout && (window as any).kakaoMapInstance.relayout()
                                     const center = new (window as any).kakao.maps.LatLng(33.4996, 126.5312)
                                     (window as any).kakaoMapInstance.setCenter && (window as any).kakaoMapInstance.setCenter(center)
-                                    log('✅ 탭 전환 후 지도 relayout 성공')
                                   } catch (e) {
                                   }
                                 }

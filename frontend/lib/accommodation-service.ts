@@ -32,7 +32,6 @@ export const accommodationService = {
     personal: number = 2,
     limit: number = 100
   ) {
-    log("🏨 AccommodationService.searchPlaces 호출됨:", { region, checkIn, checkOut, personal, limit })
     try {
       const queryParams = new URLSearchParams({
         region: encodeURIComponent(region),
@@ -43,7 +42,6 @@ export const accommodationService = {
       })
 
       const result = await apiClient.get(`/yeogi/places?${queryParams.toString()}`)
-      log("📦 API 응답:", result)
 
       if (!result) {
         return []
@@ -54,7 +52,6 @@ export const accommodationService = {
       }
 
       if (result.data && Array.isArray(result.data)) {
-        log("✅ 숙소 데이터 개수:", result.data.length)
         return result.data
       } else {
         return []
@@ -72,7 +69,6 @@ export const accommodationService = {
     checkOut: string = getDefaultDates().checkOut,
     personal: number = 2
   ) {
-    log("🛏️ AccommodationService.searchRooms 호출됨:", { placeId, checkIn, checkOut, personal })
     try {
       const queryParams = new URLSearchParams({
         checkIn,
@@ -81,7 +77,6 @@ export const accommodationService = {
       })
 
       const result = await apiClient.get(`/yeogi/rooms/${placeId}?${queryParams.toString()}`)
-      log("📦 API 응답:", result)
 
       if (!result) {
         return []
@@ -92,7 +87,6 @@ export const accommodationService = {
       }
 
       if (result.data && Array.isArray(result.data)) {
-        log("✅ 객실 데이터 개수:", result.data.length)
         return result.data
       } else {
         return []

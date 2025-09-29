@@ -13,7 +13,6 @@ interface IdFinderDialogProps {
   onClose: () => void
 }
 
-export default function IdFinderDialog({ open, onClose }: IdFinderDialogProps) {
   const [name, setName] = useState("")
   const [birthYear, setBirthYear] = useState("")
   const [birthMonth, setBirthMonth] = useState("")

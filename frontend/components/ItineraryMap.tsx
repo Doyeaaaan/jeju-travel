@@ -130,7 +130,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
   const [isLoading, setIsLoading] = useState(true)
 
   // 모든 장소 수집 (일차 필터링 적용)
-  // log("🗺️ ItineraryMap 데이터 분석:", {
   //   itinerary,
   //   itineraryDays: itinerary.days,
   //   activeDay,
@@ -146,7 +145,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
   const allPlaces = itinerary.days
     .filter(day => {
       const shouldInclude = showAllDays || (currentActiveDay && day.day === currentActiveDay)
-      log(`📅 일차 ${day.day} 필터링:`, { 
         shouldInclude, 
         showAllDays, 
         activeDay: currentActiveDay, 
@@ -158,7 +156,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     .flatMap(day => {
       // items 또는 places 필드 지원
       const items = day.items || day.places || []
-      log(`📍 일차 ${day.day} 아이템들:`, items)
       return items.map(item => ({
         name: item.label || item.name,
         category: item.category || item.type,
@@ -168,9 +165,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
       }))
     }).filter(place => place.lat && place.lng)
 
-  log("📍 필터링된 장소들:", allPlaces)
-  log("🔍 activeDay 값:", activeDay, "showAllDays:", showAllDays)
-  log("📊 일차별 장소 수:", allPlaces.reduce((acc, place) => {
     acc[place.day] = (acc[place.day] || 0) + 1
     return acc
   }, {} as Record<number, number>))
@@ -187,16 +181,13 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
       return
     }
 
-    log('🗺️ 카카오맵 초기화 시작, 장소 수:', allPlaces.length, 'activeDay:', activeDay, 'showAllDays:', showAllDays)
 
     // 장소가 없어도 지도는 초기화해야 함
     if (allPlaces.length === 0) {
-      log('⚠️ 표시할 장소가 없지만 지도는 초기화합니다')
     }
 
     // 카카오맵이 이미 로드되어 있는지 확인
     if (window.kakao && window.kakao.maps) {
-      log('🗺️ 카카오맵이 이미 로드되어 있음, 바로 초기화')
       initializeMap()
       return
     }
@@ -207,12 +198,10 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     if (!apiKey) {
       return
     }
-    log('🔑 카카오맵 API 키 사용:', apiKey.substring(0, 10) + '...')
     
     // 이미 스크립트가 로드되어 있는지 확인
     const existingScript = document.querySelector(`script[src*="dapi.kakao.com"]`)
     if (existingScript) {
-      log('📜 기존 카카오맵 스크립트 발견, 재사용')
       if (window.kakao && window.kakao.maps) {
         initializeMap()
       } else {
@@ -232,11 +221,8 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     script.async = true
     
     script.onload = () => {
-      log('📜 카카오맵 스크립트 로드 완료')
       if (window.kakao && window.kakao.maps) {
-        log('🗺️ 카카오맵 객체 확인됨, 초기화 시작')
         window.kakao.maps.load(() => {
-          log('🗺️ 카카오맵 로드 콜백 실행')
           initializeMap()
         })
       } else {
@@ -260,7 +246,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
   // activeDay가 변경될 때마다 지도 다시 초기화
   useEffect(() => {
     if (map && currentActiveDay) {
-      log('🔄 activeDay 변경으로 인한 지도 재초기화:', currentActiveDay)
       // 지도가 이미 초기화되어 있으면 마커만 업데이트
       setTimeout(() => {
         if (map && window.kakao && window.kakao.maps) {
@@ -287,7 +272,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
                        window.getComputedStyle(el).visibility !== 'hidden'
 
       if (isVisible) {
-        log('🔄 지도가 보임, relayout 실행')
         try {
           map.relayout && map.relayout()
           const center = new window.kakao.maps.LatLng(33.4996, 126.5312)
@@ -313,7 +297,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
       return
     }
 
-    log('🔄 마커 업데이트 시작, activeDay:', currentActiveDay, '장소 수:', allPlaces.length)
 
     // 기존 마커들 제거
     markers.forEach(marker => {
@@ -410,24 +393,20 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     // 지도 범위 조정
     if (allPlaces.length > 0) {
       map.setBounds(bounds)
-      log('✅ 마커 업데이트 완료, 마커 수:', newMarkers.length)
     } else {
       // 장소가 없으면 제주도 중심으로 설정
       const center = new window.kakao.maps.LatLng(33.4996, 126.5312)
       map.setCenter(center)
       map.setLevel(8)
-      log('✅ 지도 중심 설정 완료 (장소 없음)')
     }
     
     // 탭 전환 시에도 relayout 실행 (지도 크기 재계산)
     setTimeout(() => {
-      log('🔄 탭 전환 시 relayout 실행')
       map.relayout()
     }, 100)
   }, [map, currentActiveDay, allPlaces.length])
 
   const initializeMap = () => {
-    log('🗺️ initializeMap 함수 시작')
     
     if (!window.kakao || !window.kakao.maps) {
       setIsLoading(false)
@@ -439,7 +418,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
       return
     }
 
-    log('🗺️ 지도 초기화 중...')
 
     // 제주도 중심 좌표
     const center = new window.kakao.maps.LatLng(33.4996, 126.5312)
@@ -452,7 +430,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     let kakaoMap: any
     try {
       kakaoMap = new window.kakao.maps.Map(mapRef.current, options)
-      log('🗺️ 지도 객체 생성 완료')
       setMap(kakaoMap)
     } catch (error) {
       setIsLoading(false)
@@ -464,8 +441,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
       const newMarkers: any[] = []
       const bounds = new window.kakao.maps.LatLngBounds()
 
-      log('📍 마커 생성 시작, 장소 수:', allPlaces.length)
-      log('🎯 마커 생성할 장소들:', allPlaces.map(p => `${p.name} (${p.day}일차)`))
 
       allPlaces.forEach((place, index) => {
         const position = new window.kakao.maps.LatLng(place.lat!, place.lng!)
@@ -562,16 +537,13 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
       // 지도 범위 조정
       if (allPlaces.length > 0) {
         mapInstance.setBounds(bounds)
-        log('✅ 지도 범위 조정 완료')
       } else {
         // 장소가 없으면 제주도 중심으로 설정
         const center = new window.kakao.maps.LatLng(33.4996, 126.5312)
         mapInstance.setCenter(center)
         mapInstance.setLevel(8)
-        log('✅ 지도 중심 설정 완료 (장소 없음)')
       }
       
-      log('✅ 지도 초기화 완료, 마커 수:', newMarkers.length)
       setIsLoading(false)
     }
 
@@ -580,7 +552,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     
     // 최초 로드 시에도 relayout 실행 (지도 컨테이너 크기 문제 해결)
     setTimeout(() => {
-      log('🔄 최초 로드 시 relayout 실행')
       kakaoMap.relayout()
       // 지도 중심도 다시 설정
       const center = new window.kakao.maps.LatLng(33.4996, 126.5312)
@@ -589,7 +560,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     
     // 지도 초기화 후 약간의 지연을 두고 마커 업데이트 실행
     setTimeout(() => {
-      log('🔄 지도 초기화 후 마커 업데이트 실행')
       if (allPlaces.length > 0) {
         // 기존 마커들 제거
         markers.forEach(marker => {
@@ -686,12 +656,10 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
         // 지도 범위 조정
         if (allPlaces.length > 0) {
           kakaoMap.setBounds(bounds)
-          log('✅ 초기 마커 업데이트 완료, 마커 수:', newMarkers.length)
         }
         
         // 초기 마커 업데이트 후에도 relayout 실행
         setTimeout(() => {
-          log('🔄 초기 마커 업데이트 후 relayout 실행')
           kakaoMap.relayout()
         }, 100)
       }
@@ -703,7 +671,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     const el = mapRef.current as HTMLElement | null
     if (!el) return
 
-    log('🗺️ 지도 준비 확인 시작, 장소 수:', allPlaces.length, 'activeDay:', activeDay)
 
     // 컨테이너가 실제로 보이는지 확인 (display: none이 아닌지)
     const rect = el.getBoundingClientRect()
@@ -711,7 +678,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
                      window.getComputedStyle(el).display !== 'none' &&
                      window.getComputedStyle(el).visibility !== 'hidden'
 
-    log('📐 컨테이너 상태:', {
       width: rect.width,
       height: rect.height,
       isVisible,
@@ -720,7 +686,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     })
 
     if (!isVisible) {
-      log('⚠️ 컨테이너가 보이지 않음, 1초 후 재시도')
       setTimeout(() => {
         ensureMapReady()
       }, 1000)
@@ -729,14 +694,12 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
 
     // 만약 map이 이미 있으면 relayout + setCenter 시도
     if (map) {
-      log('🔄 기존 지도 relayout 시도')
       // 약간의 딜레이로 브라우저 레이아웃 안정화 후 relayout
       setTimeout(() => {
         try {
           map.relayout && map.relayout()
           const center = new window.kakao.maps.LatLng(33.4996, 126.5312)
           map.setCenter && map.setCenter(center)
-          log('✅ 지도 relayout 성공')
         } catch (e) {
           setMap(null)
           initializeMap() // 맵 재생성
@@ -746,7 +709,6 @@ export default function ItineraryMap({ itinerary, activeDay, showAllDays = true 
     }
 
     // map이 없으면 바로 생성
-    log('✅ 컨테이너가 보임, 지도 생성')
     initializeMap()
   }
 

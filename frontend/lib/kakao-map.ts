@@ -30,26 +30,20 @@ class KakaoMapService {
 
   // 카카오맵 API 스크립트 로드
   async loadKakaoMapAPI(): Promise<void> {
-    log("🔑 카카오맵 API 키:", this.KAKAO_MAP_API_KEY)
     
     if (this.isScriptLoaded) {
-      log("✅ 카카오맵 API 이미 로드됨")
       return
     }
 
-    log("📡 카카오맵 API 스크립트 로딩 시작...")
     
     return new Promise((resolve, reject) => {
       const script = document.createElement("script")
       script.type = "text/javascript"
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${this.KAKAO_MAP_API_KEY}&autoload=false`
       
-      log("🌐 카카오맵 스크립트 URL:", script.src)
       
       script.onload = () => {
-        log("📥 카카오맵 스크립트 로드 완료, 맵 초기화 중...")
         window.kakao.maps.load(() => {
-          log("✅ 카카오맵 API 초기화 완료")
           this.isScriptLoaded = true
           resolve()
         })

@@ -17,7 +17,6 @@ type Props = {
   onClose: () => void;
 };
 
-export default function IdFinderDialog({ open, onClose }: Props) {
   const [name, setName] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");

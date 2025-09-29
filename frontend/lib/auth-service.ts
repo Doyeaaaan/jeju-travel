@@ -64,7 +64,6 @@ export class AuthService {
 
       // 만료 15분 전에 토큰 갱신
       if (timeUntilExpiration > 0 && timeUntilExpiration <= this.REFRESH_THRESHOLD) {
-        log("🔄 토큰 만료 15분 전, 자동 갱신 시도")
         await this.reissueToken()
       }
     } catch (error) {
@@ -73,7 +72,6 @@ export class AuthService {
 
   // 토큰 저장
   saveTokens(loginResponse: LoginResponseDto): void {
-    log("💾 토큰 저장 중...", {
       accessToken: loginResponse.accessToken ? `${loginResponse.accessToken.substring(0, 20)}...` : null,
       refreshToken: loginResponse.refreshToken ? `${loginResponse.refreshToken.substring(0, 20)}...` : null,
       accessTokenExpirationTime: loginResponse.accessTokenExpirationTime,
@@ -89,7 +87,6 @@ export class AuthService {
     localStorage.setItem("accessTokenExpiration", accessTokenExpiration.toString())
     localStorage.setItem("refreshTokenExpiration", refreshTokenExpiration.toString())
 
-    log("✅ 토큰 저장 완료", {
       accessTokenExpiration: new Date(accessTokenExpiration).toLocaleString(),
       refreshTokenExpiration: new Date(refreshTokenExpiration).toLocaleString()
     })
@@ -140,13 +137,11 @@ export class AuthService {
   isTokenValid(): boolean {
     const token = this.getAccessToken()
     if (!token) {
-      log("❌ 토큰 유효성 검사 실패: 토큰 없음")
       return false
     }
 
     const expiration = localStorage.getItem("accessTokenExpiration")
     if (!expiration) {
-      log("❌ 토큰 유효성 검사 실패: 만료 시간 없음")
       return false
     }
 
@@ -154,7 +149,6 @@ export class AuthService {
     const expirationTime = Number.parseInt(expiration)
     const isValid = currentTime < expirationTime
     
-    log("⏰ 토큰 유효성 검사:", {
       currentTime: new Date(currentTime).toLocaleString(),
       expirationTime: new Date(expirationTime).toLocaleString(),
       isValid,
@@ -169,7 +163,6 @@ export class AuthService {
     const accessToken = this.getAccessToken()
     const isValid = this.isTokenValid()
     
-    log("🔐 인증 상태 확인:", {
       hasAccessToken: !!accessToken,
       isTokenValid: isValid,
       result: !!accessToken && isValid
@@ -220,7 +213,6 @@ export class AuthService {
   // 이메일 인증 코드 검증
   async verifyEmailCode(email: string, code: string): Promise<void> {
     const verifyDto: VerifyCodeDto = { email, code }
-    log("📧 인증 코드 검증 요청:", verifyDto)
     const response = await apiClient.post<any>("/api/auth/verify-email", verifyDto, false)
 
     // 백엔드에서 성공 응답이 "200 OK" 또는 "SUCCESS"로 올 수 있음
@@ -252,11 +244,9 @@ export class AuthService {
     const loginRequest: LoginRequestDto = { email, password }
     const response = await apiClient.post<LoginResponseDto>("/api/auth/login", loginRequest, false)
 
-    log("🔍 로그인 응답 분석:", response)
 
     // 백엔드에서 성공 응답이 "SUCCESS" 또는 성공 메시지와 함께 올 수 있음
     if (response.data) {
-      log("✅ 로그인 성공, 토큰 저장 중...")
       this.saveTokens(response.data)
 
       // 토큰에서 사용자 정보 추출
@@ -272,7 +262,6 @@ export class AuthService {
           updatedAt: new Date().toISOString(),
         }
         this.saveUser(user)
-        log("👤 사용자 정보 저장 완료:", user)
       }
       return response.data
     } else {
@@ -362,7 +351,6 @@ export class AuthService {
   async reissueToken(): Promise<LoginResponseDto> {
     const refreshToken = this.getRefreshToken()
     const accessToken = this.getAccessToken()
-    log("🔑 현재 토큰 상태:", {
       hasRefreshToken: !!refreshToken,
       hasAccessToken: !!accessToken,
       refreshTokenExpiration: localStorage.getItem("refreshTokenExpiration"),
@@ -391,8 +379,6 @@ export class AuthService {
     const reissueRequest: ReissueRequestDto = { refreshToken }
 
     try {
-      log("🔄 토큰 재발급 시도")
-      log("📤 요청 데이터:", { refreshToken: refreshToken ? `${refreshToken.substring(0, 20)}...` : null })
       
       const response = await fetch("/api/api/auth/reissue-token", {
         method: "POST",
@@ -431,7 +417,6 @@ export class AuthService {
       }
 
       if (data.data) {
-        log("✅ 토큰 재발급 성공")
         this.saveTokens(data.data)
         return data.data
       } else {
@@ -475,7 +460,6 @@ export class AuthService {
     try {
       const response = await apiClient.get<User>("/api/auth/me", true)
       if (response.data) {
-        log("✅ 서버에서 사용자 정보 조회 성공:", response.data)
         return response.data
       }
       return null

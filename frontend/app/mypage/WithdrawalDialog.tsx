@@ -32,7 +32,6 @@ interface WithdrawalDialogProps {
   onSuccess: () => void;
 }
 
-export default function WithdrawalDialog({
   open,
   onOpenChange,
   onSuccess,

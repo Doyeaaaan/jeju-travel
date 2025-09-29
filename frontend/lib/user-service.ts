@@ -8,7 +8,6 @@ export class UserService {
   // 마이페이지 정보 조회
   async getMypage(): Promise<ApiResponse<MypageResponseDto>> {
     const response = await apiClient.get<MypageResponseDto>("/api/user/mypage")
-    log("📡 마이페이지 API 응답:", response)
     return {
       status: "success",
       message: "마이페이지 정보 조회 성공",
@@ -18,7 +17,6 @@ export class UserService {
 
   // 프로필 수정
   async updateProfile(nickname: string, image?: File): Promise<ApiResponse<any>> {
-    log("📤 프로필 업데이트 요청:", { nickname, hasImage: !!image })
     
     const formData = new FormData()
 
@@ -32,15 +30,12 @@ export class UserService {
     }))
 
     if (image) {
-      log("📎 이미지 파일 추가:", image.name, image.size, image.type)
       formData.append("image", image)
     }
 
-    log("📦 FormData 구성 완료")
     
     // 백엔드 엔드포인트와 HTTP 메서드 수정
     const result = await apiClient.patchFormData<any>("/api/user/mypage", formData)
-    log("📥 프로필 업데이트 응답:", result)
     
     return result
   }

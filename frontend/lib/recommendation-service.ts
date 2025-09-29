@@ -14,7 +14,6 @@ export class RecommendationService {
     request: KeywordRecommendationRequest
   ): Promise<KeywordRecommendationResponse> {
     try {
-      log("🎯 키워드 기반 추천 요청:", request)
       
       const response = await apiClient.post<KeywordRecommendationResponse>(
         "/api/recommendations/keyword-template",
@@ -22,7 +21,6 @@ export class RecommendationService {
         false // 인증 불필요
       )
 
-      log("📦 키워드 추천 응답:", response)
       
       // 백엔드 ApiResponse 구조: { success, data, error }
       if (response.success === true && response.data) {

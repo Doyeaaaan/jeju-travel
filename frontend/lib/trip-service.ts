@@ -17,7 +17,6 @@ import type {
 export class TripService {
   // 사용자의 모든 여행 계획 조회
   async getUserTripPlans(): Promise<{ data: TripPlanDto[] }> {
-    log("📋 TripService.getUserTripPlans 호출됨")
 
     const user = authService.getCurrentUser()
     if (!user) {
@@ -27,7 +26,6 @@ export class TripService {
     try {
       // GET /api/trip-plans/my-plans API 호출 (사용자별 여행 계획 목록)
       const response = await apiClient.get<any>("/api/trip-plans/my-plans")
-      log("✅ 사용자 여행 계획 목록 조회 성공:", response)
 
       // 응답 데이터 구조 확인 및 정규화
       let tripPlans = []
@@ -43,7 +41,6 @@ export class TripService {
         tripPlans = Array.isArray(response.content) ? response.content : [response.content]
       }
 
-      log("📋 파싱된 여행 계획:", tripPlans.length, "개")
 
       // 데이터 정규화
       const normalizedPlans = tripPlans.map((plan: any) => ({
@@ -65,7 +62,6 @@ export class TripService {
 
       // 404나 빈 응답인 경우 빈 배열 반환
       if (error.message?.includes("404") || error.message?.includes("Not Found") || error.status === 404) {
-        log("⚠️ 여행 계획이 없거나 API 엔드포인트가 없습니다.")
         return {
           status: "success",
           message: "여행 계획이 없습니다.",
@@ -89,28 +85,22 @@ export class TripService {
 
   // 내 여행 계획 목록 조회 (서버 연동)
   async getPlans(): Promise<{ data: TripPlanDto[] }> {
-    log("🔄 TripService.getPlans 호출됨")
     
     try {
       // 백엔드는 ApiResponse 래퍼 없이 직접 List<TripPlanDto>를 반환
       const response = await apiClient.get<any>("/api/trip-plans/my-plans")
-      log("✅ 여행 계획 목록 조회 성공:", response)
-      log("📦 response의 키들:", Object.keys(response))
       
       // response가 직접 배열이면 그대로 사용
       if (Array.isArray(response)) {
-        log("🔧 response가 배열입니다:", response.length, "개")
         return { data: response }
       }
       
       // response.data가 있으면 사용
       if (response.data && Array.isArray(response.data)) {
-        log("🔧 response.data가 배열입니다:", response.data.length, "개")
         return { data: response.data }
       }
       
       // 그 외의 경우 response 자체를 확인
-      log("🔧 response 전체 구조:", response)
       return { data: [] }
     } catch (error) {
       throw error
@@ -119,12 +109,10 @@ export class TripService {
 
   // 플랜 상세 조회 (일차별 일정 + 목적지 포함)
   async getPlanDays(planId: number): Promise<{ data: TripDayWithDestinationsDto[] }> {
-    log("🔄 TripService.getPlanDays 호출됨:", { planId })
     
     try {
       // 백엔드는 ApiResponse<List<TripDayWithDestinationsDto>>를 반환
       const response = await apiClient.get<any>(`/api/trip-plans/${planId}/days-with-dests`)
-      log("✅ 플랜 상세 조회 성공:", response.data)
       
       // response.data.data가 실제 TripDayWithDestinationsDto[] 배열
       return { data: response.data.data || response.data }
@@ -135,7 +123,6 @@ export class TripService {
 
   // 여행 계획 생성
   async createTripPlan(planName: string, startDate: string, endDate: string): Promise<{ data: TripPlanDto }> {
-    log("🗓️ TripService.createTripPlan 호출됨:", { planName, startDate, endDate })
 
     const user = authService.getCurrentUser()
     if (!user) {
@@ -150,7 +137,6 @@ export class TripService {
 
     try {
       const response = await apiClient.post<any>("/api/trip-plans", requestData)
-      log("✅ 여행 계획 생성 성공:", response)
 
       // 응답 데이터 정규화
       const planData = response.data || response
@@ -172,15 +158,12 @@ export class TripService {
 
   // 여행 계획 조회
   async getTripPlan(planId: number): Promise<{ data: TripPlanDto }> {
-    log("📋 TripService.getTripPlan 호출됨:", { planId })
 
     try {
       const response = await apiClient.get<any>(`/api/trip-plans/${planId}`)
-      log("✅ 여행 계획 원본 응답:", response)
 
       // API 응답 구조에 맞게 데이터 추출
       const tripPlanData = response.data || response
-      log("✅ 여행 계획 데이터:", tripPlanData)
 
       // 응답 구조 통일
       return {
@@ -201,11 +184,9 @@ export class TripService {
 
   // 여행 일정과 목적지 함께 조회
   async getTripDaysWithDestinations(planId: number): Promise<{ data: TripDayWithDestinationsDto[] }> {
-    log("📅 TripService.getTripDaysWithDestinations 호출됨:", { planId })
 
     try {
       const response = await apiClient.get<any>(`/api/trip-plans/${planId}/days-with-dests`)
-      log("✅ 일정과 목적지 원본 응답:", response)
 
       // API 응답이 배열인지 객체인지 확인
       let daysData = response.data || response
@@ -214,8 +195,6 @@ export class TripService {
         daysData = daysData.days || daysData.tripDays || []
       }
 
-      log("✅ 일정과 목적지 조회 성공:", daysData?.length || 0, "일")
-      log("📋 일정 데이터 구조:", daysData)
 
       return {
         status: "success",
@@ -229,11 +208,9 @@ export class TripService {
 
   // 여행 일정 목록 조회
   async getTripDays(planId: number): Promise<{ data: TripDayDto[] }> {
-    log("📅 TripService.getTripDays 호출됨:", { planId })
 
     try {
       const response = await apiClient.get<any>(`/api/trip-plans/${planId}/days`)
-      log("✅ 여행 일정 목록 조회 성공:", response.data?.length || 0, "일")
 
       // 응답 데이터 정규화
       const daysData = response.data || response
@@ -249,11 +226,9 @@ export class TripService {
 
   // 여행 일정 추가
   async addTripDay(planId: number, date: string): Promise<{ data: TripDayDto }> {
-    log("📅 TripService.addTripDay 호출됨:", { planId, date })
 
     // LocalDate 형식으로 변환 (YYYY-MM-DD)
     const formattedDate = new Date(date).toISOString().split('T')[0]
-    log("📅 변환된 날짜:", formattedDate)
 
     const requestData: AddTripDayRequest = {
       date: formattedDate,
@@ -261,7 +236,6 @@ export class TripService {
 
     try {
       const response = await apiClient.post<any>(`/api/trip-plans/${planId}/days`, requestData)
-      log("✅ 여행 일정 추가 성공:", response.data)
 
       // 응답 데이터 정규화
       const dayData = response.data || response
@@ -281,11 +255,9 @@ export class TripService {
 
   // 목적지 목록 조회
   async getDestinations(dayId: number): Promise<{ data: DestinationDto[] }> {
-    log("📍 TripService.getDestinations 호출됨:", { dayId })
 
     try {
       const response = await apiClient.get<DestinationDto[]>(`/api/trip-days/${dayId}/destinations`)
-      log("✅ 목적지 목록 조회 성공:", response.data?.length || 0, "개")
       return response
     } catch (error) {
       throw error
@@ -302,7 +274,6 @@ export class TripService {
     transportation?: string,
     price?: number,
   ): Promise<{ data: DestinationDto }> {
-    log("📍 TripService.addDestination 호출됨:", {
       dayId,
       placeId,
       type,
@@ -324,7 +295,6 @@ export class TripService {
 
     try {
       const response = await apiClient.post<DestinationDto>(`/api/trip-days/${dayId}/destinations`, requestData)
-      log("✅ 목적지 추가 성공:", response.data)
       return response
     } catch (error) {
       throw error
@@ -341,7 +311,6 @@ export class TripService {
     category: string,
     memo?: string
   ): Promise<{ data: DestinationDto }> {
-    log("📍 TripService.addDestinationToPlan 호출됨:", {
       planId,
       dayId,
       placeId,
@@ -361,7 +330,6 @@ export class TripService {
 
     try {
       const response = await apiClient.post<DestinationDto>(`/api/trip-plans/${planId}/days/${dayId}/destinations`, requestData)
-      log("✅ 목적지 추가 성공:", response.data)
       return response
     } catch (error) {
       throw error
@@ -370,11 +338,9 @@ export class TripService {
 
   // 목적지 삭제
   async removeDestination(dayId: number, destId: number): Promise<void> {
-    log("🗑️ TripService.removeDestination 호출됨:", { dayId, destId })
 
     try {
       await apiClient.delete(`/api/trip-days/${dayId}/destinations/${destId}`)
-      log("✅ 목적지 삭제 성공")
     } catch (error) {
       throw error
     }
@@ -382,7 +348,6 @@ export class TripService {
 
   // 목적지 순서 변경
   async updateDestinationSequence(dayId: number, orderedDestinationIds: number[]): Promise<{ data: TripDayWithDestinationsDto }> {
-    log("🔄 TripService.updateDestinationSequence 호출됨:", { dayId, orderedDestinationIds })
 
     // dayId 유효성 검증
     if (!dayId) {
@@ -403,7 +368,6 @@ export class TripService {
 
     try {
       const response = await apiClient.put<TripDayWithDestinationsDto>(`/api/trip-days/${dayId}/destinations/sequence`, requestData)
-      log("✅ 목적지 순서 변경 성공:", response.data)
       return response
     } catch (error) {
       throw error
@@ -412,11 +376,9 @@ export class TripService {
 
   // 여행 비용 조회
   async getTripCosts(planId: number): Promise<{ data: CostDto[] }> {
-    log("💰 TripService.getTripCosts 호출됨:", { planId })
 
     try {
       const response = await apiClient.get<CostDto[]>(`/api/trip-plans/${planId}/costs`)
-      log("✅ 여행 비용 조회 성공:", response.data?.length || 0, "개")
       return response
     } catch (error) {
       throw error
@@ -431,7 +393,6 @@ export class TripService {
     selectedPlaces: any[],
     selectedAccommodations: any[],
   ): Promise<{ data: TripPlanDto }> {
-    log("💾 TripService.saveCompleteItinerary 호출됨:", {
       planName,
       startDate,
       endDate,
@@ -443,7 +404,6 @@ export class TripService {
       // 1. 여행 계획 생성
       const tripPlanResponse = await this.createTripPlan(planName, startDate, endDate)
       const tripPlan = tripPlanResponse.data
-      log("✅ 1단계: 여행 계획 생성 완료:", tripPlan.id)
 
       // 2. 여행 기간 계산
       const start = new Date(startDate)
@@ -459,7 +419,6 @@ export class TripService {
 
         const tripDayResponse = await this.addTripDay(tripPlan.id, dateString)
         tripDays.push(tripDayResponse.data)
-        log(`✅ ${day}일차 일정 생성 완료:`, tripDayResponse.data.id)
       }
 
       // 4. 각 일차별로 목적지 추가
@@ -485,7 +444,6 @@ export class TripService {
             null,
             accommodation.room?.price || 0,
           )
-          log(`✅ ${day}일차 숙소 추가:`, accommodation.place.name)
         }
 
         // 관광지 추가
@@ -500,11 +458,9 @@ export class TripService {
             null,
             0,
           )
-          log(`✅ ${day}일차 관광지 추가:`, selectedPlace.place.title || selectedPlace.place.name)
         }
       }
 
-      log("🎉 완전한 여행 계획 저장 완료!")
       return tripPlanResponse
     } catch (error) {
       throw error
@@ -513,11 +469,9 @@ export class TripService {
 
   // 여행 계획 삭제
   async deleteTripPlan(planId: number): Promise<void> {
-    log("🗑️ TripService.deleteTripPlan 호출됨:", { planId })
 
     try {
       await apiClient.delete(`/api/trip-plans/${planId}`)
-      log("✅ 여행 계획 삭제 성공")
     } catch (error) {
       throw error
     }

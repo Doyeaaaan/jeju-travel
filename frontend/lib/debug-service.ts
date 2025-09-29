@@ -12,7 +12,6 @@ export class DebugService {
       code,
       timestamp: Date.now(),
     })
-    log(`🧪 테스트 코드 생성: ${email} -> ${code}`)
     return code
   }
 
@@ -20,19 +19,16 @@ export class DebugService {
   static verifyTestCode(email: string, inputCode: string): boolean {
     const stored = this.emailCodes.get(email)
     if (!stored) {
-      log(`❌ 저장된 코드 없음: ${email}`)
       return false
     }
 
     // 5분 만료
     if (Date.now() - stored.timestamp > 5 * 60 * 1000) {
-      log(`⏰ 코드 만료: ${email}`)
       this.emailCodes.delete(email)
       return false
     }
 
     const isValid = stored.code === inputCode
-    log(`🔍 코드 검증: ${email}, 입력: ${inputCode}, 저장: ${stored.code}, 결과: ${isValid}`)
 
     if (isValid) {
       this.emailCodes.delete(email)
@@ -43,7 +39,6 @@ export class DebugService {
 
   // 서버 응답 분석
   static analyzeServerResponse(response: any, context: string) {
-    log(`📊 서버 응답 분석 [${context}]:`, {
       status: response.status,
       message: response.message,
       data: response.data,
@@ -53,7 +48,6 @@ export class DebugService {
 
   // 네트워크 요청 로깅
   static logNetworkRequest(method: string, url: string, data: any) {
-    log(`🌐 네트워크 요청 [${method}]:`, {
       url,
       data,
       timestamp: new Date().toISOString(),

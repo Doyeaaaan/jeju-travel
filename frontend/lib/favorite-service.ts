@@ -19,13 +19,11 @@ export interface FavoriteResponse {
 class FavoriteService {
   // 좋아요 추가
   async addFavorite(placeId: number, type: "ACCOMMODATION" | "RESTAURANT" | "TOURIST"): Promise<FavoriteResponse> {
-    log("❤️ 좋아요 추가:", { placeId, type });
     
     const request: FavoriteRequest = { placeId, type };
     const response = await apiClient.post<FavoriteResponse>("/api/favorites", request, true);
     
     if (response.data) {
-      log("✅ 좋아요 추가 성공:", response.data);
       return response.data;
     } else {
       throw new Error(response.message || "좋아요 추가에 실패했습니다.");
@@ -34,12 +32,10 @@ class FavoriteService {
 
   // 좋아요 제거
   async removeFavorite(placeId: number, type: "ACCOMMODATION" | "RESTAURANT" | "TOURIST"): Promise<void> {
-    log("💔 좋아요 제거:", { placeId, type });
     
     const response = await apiClient.delete(`/api/favorites/${placeId}/${type}`, true);
     
     if (response.status === "200 OK") {
-      log("✅ 좋아요 제거 성공");
     } else {
       throw new Error(response.message || "좋아요 제거에 실패했습니다.");
     }
@@ -47,22 +43,18 @@ class FavoriteService {
 
   // 사용자의 좋아요 목록 조회
   async getFavorites(): Promise<FavoriteDto[]> {
-    log("📋 좋아요 목록 조회");
     
     const response = await apiClient.get<FavoriteDto[]>("/api/favorites", true);
     
     if (response.data) {
-      log("✅ 좋아요 목록 조회 성공:", response.data);
       return response.data;
     } else {
-      log("📋 좋아요 목록이 비어있습니다.");
       return [];
     }
   }
 
   // 특정 장소의 좋아요 상태 확인
   async isFavorite(placeId: number, type: "ACCOMMODATION" | "RESTAURANT" | "TOURIST"): Promise<boolean> {
-    log("🔍 좋아요 상태 확인:", { placeId, type });
     
     try {
       const favorites = await this.getFavorites();
@@ -70,7 +62,6 @@ class FavoriteService {
         favorite => favorite.placeId === placeId && favorite.type === type
       );
       
-      log("🔍 좋아요 상태:", isFavorited);
       return isFavorited;
     } catch (error) {
       return false;
@@ -79,7 +70,6 @@ class FavoriteService {
 
   // 좋아요 토글 (추가/제거)
   async toggleFavorite(placeId: number, type: "ACCOMMODATION" | "RESTAURANT" | "TOURIST"): Promise<boolean> {
-    log("🔄 좋아요 토글:", { placeId, type });
     
     try {
       const isFavorited = await this.isFavorite(placeId, type);

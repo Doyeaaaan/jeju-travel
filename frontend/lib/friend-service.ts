@@ -74,7 +74,6 @@ export class FriendService {
       }
       
       await apiClient.post("/api/friend", user.id, true)
-      log("✅ 친구 추가 요청 성공")
       return { success: true }
     } catch (error: any) {
       
@@ -92,7 +91,6 @@ export class FriendService {
   async acceptFriendRequest(requestId: number): Promise<boolean> {
     try {
       await apiClient.post(`/api/friend/request/${requestId}/accept`, {}, true)
-      log("✅ 친구 요청 수락 성공")
       return true
     } catch (error) {
       return false
@@ -103,7 +101,6 @@ export class FriendService {
   async rejectFriendRequest(requestId: number): Promise<boolean> {
     try {
       await apiClient.delete(`/api/friend/request/${requestId}/reject`, true)
-      log("✅ 친구 요청 거절 성공")
       return true
     } catch (error) {
       return false
@@ -113,9 +110,7 @@ export class FriendService {
   // 친구 삭제
   async deleteFriend(friendId: number): Promise<boolean> {
     try {
-      log("🗑️ 친구 삭제 API 호출 - friendId:", friendId)
       await apiClient.delete(`/api/friend/${friendId}`, true)
-      log("✅ 친구 삭제 성공")
       return true
     } catch (error: any) {
         message: error.message,
@@ -130,7 +125,6 @@ export class FriendService {
   async cancelFriendRequest(requestId: number): Promise<boolean> {
     try {
       await apiClient.delete(`/api/friend/request/${requestId}`, true)
-      log("✅ 친구 요청 취소 성공")
       return true
     } catch (error) {
       return false

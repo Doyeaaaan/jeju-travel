@@ -13,7 +13,6 @@ interface PasswordResetDialogProps {
   onClose: () => void
 }
 
-export default function PasswordResetDialog({ open, onClose }: PasswordResetDialogProps) {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [step, setStep] = useState<"email" | "sent">("email")

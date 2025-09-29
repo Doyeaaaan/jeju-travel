@@ -18,7 +18,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Mail, Send } from "lucide-react"
 import { authService } from "@/lib/auth-service"
 
-export default function PasswordResetDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)

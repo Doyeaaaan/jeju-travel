@@ -38,8 +38,6 @@ export class ApiClient {
       }
     }
 
-    log(`🌐 API 요청: ${options.method || "GET"} ${url} (재시도: ${retryCount})`)
-    log(`🔑 Authorization: ${headers.Authorization ? "Bearer ***" : "없음"}`)
 
     try {
       const response = await fetch(url, {
@@ -47,7 +45,6 @@ export class ApiClient {
         headers,
       })
 
-      log(`📡 응답 상태: ${response.status}`)
 
       // 401/403 응답 처리
       if (response.status === 401) {
@@ -61,12 +58,10 @@ export class ApiClient {
 
         // 토큰 갱신 시도
         try {
-          log("🔄 토큰 갱신 시도...")
           const authService = new AuthService()
           const newTokens = await authService.reissueToken()
 
           if (newTokens) {
-            log("✅ 토큰 갱신 성공, 요청 재시도")
             // 새로운 토큰으로 헤더 업데이트
             headers.Authorization = `Bearer ${newTokens.accessToken}`
             // 재귀적으로 원래 요청 재시도 (재시도 횟수 증가)
@@ -108,7 +103,6 @@ export class ApiClient {
         throw error
       }
 
-      log("📦 응답 데이터:", data)
       return data
     } catch (error) {
       throw error
@@ -146,8 +140,6 @@ export class ApiClient {
       }
     }
 
-    log(`🌐 API 요청 (FormData): POST ${url}`)
-    log(`🔑 Authorization: ${headers.Authorization ? "Bearer ***" : "없음"}`)
 
     try {
       const response = await fetch(url, {
@@ -156,14 +148,12 @@ export class ApiClient {
         body: formData,
       })
 
-      log(`📡 응답 상태: ${response.status}`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      log("📦 응답 데이터:", data)
 
       return data
     } catch (error) {
@@ -198,8 +188,6 @@ export class ApiClient {
       }
     }
 
-    log(`🌐 API 요청 (FormData): PUT ${url}`)
-    log(`🔑 Authorization: ${headers.Authorization ? "Bearer ***" : "없음"}`)
 
     try {
       const response = await fetch(url, {
@@ -208,14 +196,12 @@ export class ApiClient {
         body: formData,
       })
 
-      log(`📡 응답 상태: ${response.status}`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      log("📦 응답 데이터:", data)
 
       return data
     } catch (error) {
@@ -236,8 +222,6 @@ export class ApiClient {
       }
     }
 
-    log(`🌐 API 요청 (FormData): PATCH ${url}`)
-    log(`🔑 Authorization: ${headers.Authorization ? "Bearer ***" : "없음"}`)
 
     try {
       const response = await fetch(url, {
@@ -246,14 +230,12 @@ export class ApiClient {
         body: formData,
       })
 
-      log(`📡 응답 상태: ${response.status}`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      log("📦 응답 데이터:", data)
 
       return data
     } catch (error) {
@@ -268,7 +250,6 @@ export class ApiClient {
   async getVisitJeju<T>(endpoint: string): Promise<T> {
     const url = `/api${endpoint}`
     
-    log(`🌐 VisitJeju API 요청: GET ${url}`)
     
     try {
       const response = await fetch(url, {
@@ -278,14 +259,12 @@ export class ApiClient {
         },
       })
 
-      log(`📡 VisitJeju 응답 상태: ${response.status}`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      log("📦 VisitJeju 응답 데이터:", data)
       
       return data
     } catch (error) {

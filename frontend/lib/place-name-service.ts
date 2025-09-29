@@ -15,7 +15,6 @@ export const placeNameService = {
    */
   async batchLookupPlaceNames(placeIds: string[]): Promise<Record<string, string>> {
     try {
-      log("🔍 배치 API로 장소명 조회 중...", placeIds.length, "개")
       
       const response = await apiClient.post<Record<string, { name: string }>>("/api/places/lookup", {
         ids: placeIds
@@ -30,7 +29,6 @@ export const placeNameService = {
         }
       }
       
-      log("✅ 배치 API 조회 성공:", Object.keys(result).length, "개")
       return result
     } catch (error) {
       return {}
@@ -94,20 +92,15 @@ export const placeNameService = {
       return placeNameMap
     }
 
-    log("🏷️ 장소명 해석 시작 (편집 화면 방식):", destinations.length, "개")
     
     try {
       // 1단계: 관광지 데이터 한 번에 로드
-      log("📋 관광지 데이터 로드 중...")
       const attractions = await attractionService.getAllAttractions()
-      log("✅ 관광지 데이터 로드 완료:", attractions.length, "개")
 
       // 2단계: 숙소 데이터 로드 (검색 방식)
-      log("🏨 숙소 데이터 로드 중...")
       let accommodationsData: any[] = []
       try {
         accommodationsData = await accommodationService.searchPlaces("제주", "2025-01-01", "2025-01-02", 2, 1000)
-        log("✅ 숙소 데이터 로드 완료:", accommodationsData.length, "개")
       } catch (error) {
       }
 
@@ -117,7 +110,6 @@ export const placeNameService = {
           // 캐시 먼저 확인
           if (placeNameCache.has(dest.placeId)) {
             placeNameMap[dest.placeId] = placeNameCache.get(dest.placeId)!
-            log("💾 캐시에서 발견:", dest.placeId, "→", placeNameMap[dest.placeId])
             continue
           }
 
@@ -135,7 +127,6 @@ export const placeNameService = {
             const placeName = placeInfo.name || placeInfo.title || `관광지 (${dest.placeId})`
             placeNameMap[dest.placeId] = placeName
             placeNameCache.set(dest.placeId, placeName)
-            log("✅ 관광지에서 발견:", dest.placeId, "→", placeName)
             continue
           }
 
@@ -158,7 +149,6 @@ export const placeNameService = {
               `숙소 (${dest.placeId})`
             placeNameMap[dest.placeId] = placeName
             placeNameCache.set(dest.placeId, placeName)
-            log("✅ 숙소에서 발견:", dest.placeId, "→", placeName)
             continue
           }
 
@@ -166,7 +156,6 @@ export const placeNameService = {
           const fallbackName = this.getDefaultPlaceName(dest.type, dest.placeId)
           placeNameMap[dest.placeId] = fallbackName
           placeNameCache.set(dest.placeId, fallbackName)
-          log("⚠️ 장소명 찾지 못함, 폴백 사용:", dest.placeId, "→", fallbackName)
 
         } catch (error) {
           const fallbackName = this.getDefaultPlaceName(dest.type, dest.placeId)
@@ -175,8 +164,6 @@ export const placeNameService = {
         }
       }
 
-      log("✅ 장소명 해석 완료:", Object.keys(placeNameMap).length, "개")
-      log("🏷️ 해석된 장소명들:", placeNameMap)
       return placeNameMap
 
     } catch (error) {
@@ -222,9 +209,7 @@ export const placeNameService = {
       } else {
         placeIdNum = parseInt(placeId) || 0
       }
-      log(`🔍 placeId 파싱: "${placeId}" → ${placeIdNum}, type: ${type}`)
       const result = this.getPlaceNameById(placeIdNum, type)
-      log(`✅ 최종 결과: "${result}"`)
       return result
     }
     

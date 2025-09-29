@@ -22,7 +22,6 @@ export default function HomePage() {
     const loadData = async () => {
       try {
         setLoading(true);
-        log("🏠 홈페이지 데이터 로딩 시작...");
 
         // 관광지와 맛집 데이터 동시 로드 - 여러 엔드포인트 시도
         let attractions = [];
@@ -81,7 +80,6 @@ export default function HomePage() {
           }
 
           const restaurantsText = await restaurantsResponse.text();
-          log(
             "🍽️ 맛집 API 응답 (처음 200자):",
             restaurantsText.substring(0, 200)
           );
@@ -97,7 +95,6 @@ export default function HomePage() {
 
             if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
               const jsonPart = trimmedText.substring(jsonStart, jsonEnd + 1);
-              log("🔍 JSON 부분 추출:", jsonPart.substring(0, 100));
               restaurants = JSON.parse(jsonPart);
             } else {
                 "⚠️ 첫 번째 엔드포인트에서 JSON 배열을 찾을 수 없음, 두 번째 엔드포인트 시도"
@@ -252,8 +249,6 @@ export default function HomePage() {
               }))
           : [];
 
-        log("🎯 필터링된 관광지:", filteredAttractions.length, "개");
-        log("🍽️ 필터링된 맛집:", filteredRestaurants.length, "개");
 
         setDestinationsData(filteredAttractions);
         setRestaurantsData(filteredRestaurants);
